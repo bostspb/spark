@@ -12,8 +12,8 @@ _Apache Spark позволяет разделять хранение данны�
 1. Распределение по возрасту с динамическим численным параметром `max_age`
 2. Распределение по возрасту с динамическим параметром `marital`
 
-[Решение](https://github.com/bostspb/spark/blob/main/lesson01.md) <br>
-[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/main/lesson01.zeppelin.json)
+[Решение](https://github.com/bostspb/spark/blob/master/lesson01.md) <br>
+[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/master/lesson01.zeppelin.json)
 
 ## Урок 2. Операции с данными: агрегаты, джойны. Оптимизация SQL-запросов
 ### Задание 1
@@ -88,8 +88,8 @@ BIG_CITY и CITY для остальных значений. На втором �
 * восстановление исходного значения
 * группировка по исходной колонке
 
-[Решение](https://github.com/bostspb/spark/blob/main/lesson02.md) <br>
-[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/main/lesson02.zeppelin.json)
+[Решение](https://github.com/bostspb/spark/blob/master/lesson02.md) <br>
+[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/master/lesson02.zeppelin.json)
 
 ## Урок 3. Типы данных в Spark. Коллекции как объекты DataFrame. User-Defined Functions
 * По данным `habr_data` получить таблицу с названиями топ-3 статей (по `rating`) для каждого автора
@@ -101,8 +101,8 @@ _Возможное решение:_ <br>
 3) explode массивовов 
 4) группировка с подсчетом встречаемости
 
-[Решение](https://github.com/bostspb/spark/blob/main/lesson03.md) <br>
-[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/main/lesson03.zeppelin.json)
+[Решение](https://github.com/bostspb/spark/blob/master/lesson03.md) <br>
+[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/master/lesson03.zeppelin.json)
 
 ## Урок 4. Машинное обучение на pySpark на примере линейной регрессии
 * построить распределение статей в датасете по `rating` с `bin_size = 10`
@@ -111,5 +111,5 @@ _Возможное решение:_ <br>
 * построить модель логистической регрессии `one vs all` для классификации статей по рассчитанным классам.
 * получить `F1 score` для получившейся модели
 
-[Решение](https://github.com/bostspb/spark/blob/main/lesson04.md) <br>
-[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/main/lesson04.zeppelin.json)
+[Решение](https://github.com/bostspb/spark/blob/master/lesson04.md) <br>
+[Файл JSON для импорта в Zeppelin](https://github.com/bostspb/spark/blob/master/lesson04.zeppelin.json)
