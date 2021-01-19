@@ -87,37 +87,20 @@
             .select("rating_10", "count")
     )
 
-#### Функция ratingToClass
-
-    %pyspark
-    
-    def ratingToClass(rating):
-        article_class = 'A'
-        if rating > 100: 
-            article_class = 'D'
-        elif rating > 50:
-            article_class = 'C'
-        elif rating > 0:
-            article_class = 'B'
-        elif rating == 0:
-            article_class = 'A'
-            
-        return article_class
-
 #### Добавляем к датасету категориальную фичу rating_class
 
     %pyspark
     
     def ratingToClass(rating):
-        article_class = 'A'
+        article_class = '1'
         if rating > 100: 
-            article_class = 'D'
+            article_class = '4'
         elif rating > 50:
-            article_class = 'C'
+            article_class = '3'
         elif rating > 0:
-            article_class = 'B'
+            article_class = '2'
         elif rating == 0:
-            article_class = 'A'
+            article_class = '1'
             
         return article_class
         
@@ -130,106 +113,98 @@
     +------------------------------------------------------------------------------------------------------+------+-----+
     |title                                                                                                 |rating|class|
     +------------------------------------------------------------------------------------------------------+------+-----+
-    |Кодовым названием Ubuntu 12.04 будет Precise Pangolin                                                 |54    |C    |
-    |Unreal Engine: QuickStart в Qt Creator под Arch Linux                                                 |17    |B    |
-    |Денис Литвинов (COO FunCorp): продуктовые метрики для мобильных приложений в США                      |13    |B    |
-    |ONLYOFFICE против Collabora: почему мы уверены, что наше решение лучше                                |20    |B    |
-    |Parallels Desktop 13 — семь советов для эффективной работы                                            |22    |B    |
-    |Полное руководство по написанию утилиты для Go                                                        |35    |B    |
-    |Простой плагин для локализации приложений на Unity3D                                                  |5     |B    |
-    |69 признаков того, что не вы трахаете проект, а он вас                                                |54    |C    |
-    |О нехороших контекстных объявлениях                                                                   |5     |B    |
-    |PHP Composer: фиксим зависимости без боли                                                             |76    |C    |
-    |Переезд в Европу: приключение и выводы                                                                |54    |C    |
-    |Сертификация систем фото/видеофиксации правонарушений и систем сегмента транспортной безопасности     |5     |B    |
-    |Властелин прода в царстве legacy-кода (сказочка с открытым концом)                                    |13    |B    |
-    |Intel oneAPI — один за всех, теперь — и для вас                                                       |10    |B    |
-    |Quality pipelines в мобильной разработке, часть 1: Android                                            |21    |B    |
-    |Превращая FunC в FunCtional с помощью Haskell: как Serokell победили в Telegram Blockchain Competition|15    |B    |
-    |Официальный сайт JetBrains теперь доступен на русском языке                                           |14    |B    |
-    |Интересные новинки Vue 3                                                                              |37    |B    |
-    |Сервис для случайных встреч с незнакомцами, но не дейтинг. История стартапа Random Coffee             |22    |B    |
-    |Хранилище key-value, или как наши приложения стали удобнее                                            |24    |B    |
+    |Кодовым названием Ubuntu 12.04 будет Precise Pangolin                                                 |54    |4    |
+    |Unreal Engine: QuickStart в Qt Creator под Arch Linux                                                 |17    |2    |
+    |Денис Литвинов (COO FunCorp): продуктовые метрики для мобильных приложений в США                      |13    |2    |
+    |ONLYOFFICE против Collabora: почему мы уверены, что наше решение лучше                                |20    |2    |
+    |Parallels Desktop 13 — семь советов для эффективной работы                                            |22    |3    |
+    |Полное руководство по написанию утилиты для Go                                                        |35    |3    |
+    |Простой плагин для локализации приложений на Unity3D                                                  |5     |1    |
+    |69 признаков того, что не вы трахаете проект, а он вас                                                |54    |4    |
+    |О нехороших контекстных объявлениях                                                                   |5     |1    |
+    |PHP Composer: фиксим зависимости без боли                                                             |76    |4    |
+    |Переезд в Европу: приключение и выводы                                                                |54    |4    |
+    |Сертификация систем фото/видеофиксации правонарушений и систем сегмента транспортной безопасности     |5     |1    |
+    |Властелин прода в царстве legacy-кода (сказочка с открытым концом)                                    |13    |2    |
+    |Intel oneAPI — один за всех, теперь — и для вас                                                       |10    |2    |
+    |Quality pipelines в мобильной разработке, часть 1: Android                                            |21    |3    |
+    |Превращая FunC в FunCtional с помощью Haskell: как Serokell победили в Telegram Blockchain Competition|15    |2    |
+    |Официальный сайт JetBrains теперь доступен на русском языке                                           |14    |2    |
+    |Интересные новинки Vue 3                                                                              |37    |3    |
+    |Сервис для случайных встреч с незнакомцами, но не дейтинг. История стартапа Random Coffee             |22    |3    |
+    |Хранилище key-value, или как наши приложения стали удобнее                                            |24    |3    |
     +------------------------------------------------------------------------------------------------------+------+-----+
-    only showing top 20 rows
-    
+    only showing top 20 rows    
 <hr>
 
     %pyspark
+
+    z.show(
+        habrDataWithClass \
+            .groupBy("class").count() \
+            .select("class", "count")
+            .orderBy("class")
+    )
     
+    
+#### Разделим датасет на обучающую и тестовую выборки
+
+    %pyspark
     trainDF, testDF = habrDataWithClass.randomSplit([.8, .2], seed=42)
     
     trainDF.coalesce(2).write.mode("overwrite").saveAsTable("habr.train")
     testDF.coalesce(2).write.mode("overwrite").saveAsTable("habr.test")
     
-    print("There are " + str(trainDF.count()) + " rows in the training set, and " + str(testDF.count()) + " in the test set")
+    print("В обучающей выборке " + str(trainDF.count()) + " строк, в тестовой " + str(testDF.count()) + " строк")
     
-На этом месте Zeppelin'у уже перестали помогать перезагрузки и так и не получилось доделать этот итоговый проект.
-Ниже приведен кусок кода из вебинара для линейной регрессии вместо логистической
+    В обучающей выборке 8463 строк, в тестовой 2094 строк
     
-    from pyspark.ml.linalg import Vectors
-    from pyspark.ml.regression import LinearRegression
-    from pyspark.ml.feature import Tokenizer, RegexTokenizer, HashingTF, IDF
-    from pyspark.sql.types import IntegerType
+    
+#### Построим модель логистической регрессии one vs all для классификации статей по рассчитанным классам
+
+    %pyspark
+    from pyspark.ml.feature import RegexTokenizer, HashingTF, IDF
     from pyspark.ml import Pipeline
-    from pyspark.sql.functions import udf
+    from pyspark.ml.classification import LogisticRegression, OneVsRest
+    from pyspark.ml.evaluation import MulticlassClassificationEvaluator
     
-    # Prepare training data from a list of (label, features) tuples.
-    train = spark.table("habr.train")\
-    .selectExpr("title", "cast(rating as Long) rating")\
-    .na.drop("any")
+    train = spark.table("habr.train").selectExpr("description", "cast(class as Long) class").na.drop("any")
+    test = spark.table("habr.test").selectExpr("description", "cast(class as Long) class").na.drop("any")
     
-    # Prepare test data
-    test = spark.table("habr.test")\
-    .selectExpr(" title", "cast(rating as Long) rating")\
-    .na.drop("any")
-    
-    tokenizer = Tokenizer(inputCol="title", outputCol="title_words")
-    
-    regexTokenizer = RegexTokenizer(inputCol="title", outputCol="title_words", pattern="[^a-zа-яё]", gaps=True)\
-    .setMinTokenLength(3)
-    
-    # alternatively, pattern="\\w+", gaps(False)
-    
-    
-    # tokenized = tokenizer.transform(train)
-    # tokenized.select("title", "title_words")\
-    #     .withColumn("tokens", countTokens(col("title_words"))).show(truncate=False)
-    
+    regexTokenizer = RegexTokenizer(inputCol="description", outputCol="description_words", pattern="[^a-zа-яё]", gaps=True).setMinTokenLength(3)
     regexTokenized = regexTokenizer.transform(train)
     
-    # regexTokenized.select("title", "title_words").withColumn("tokens", countTokens(col("title_words"))).show(truncate=False)
-        
-    
-    hashingTF = HashingTF(inputCol="title_words", outputCol="rawFeatures", numFeatures=200000)
+    hashingTF = HashingTF(inputCol="description_words", outputCol="rawFeatures", numFeatures=200000)
     featurizedData = hashingTF.transform(regexTokenized)
-    # alternatively, CountVectorizer can also be used to get term frequency vectors
     
     idf = IDF(inputCol="rawFeatures", outputCol="features")
     idfModel = idf.fit(featurizedData)
     rescaledData = idfModel.transform(featurizedData)
     
-    # rescaledData.select("rating", "features").show()
+    lr = LogisticRegression(labelCol="class", featuresCol="features")
+    ovr = OneVsRest(classifier=lr, labelCol="class", featuresCol="features")
     
-    
-    lr = LinearRegression(maxIter=10, regParam=0.1, featuresCol='features', labelCol='rating', predictionCol='prediction')
-    
-    p = Pipeline(stages=[])
-    
-    pipeline = Pipeline(stages=[regexTokenizer, hashingTF, idf, lr])
-     
-    
+    pipeline = Pipeline(stages=[regexTokenizer, hashingTF, idf, ovr])
     model = pipeline.fit(train)
-    prediction = model.transform(test)
+
+<hr>
     
-    from pyspark.ml.evaluation import RegressionEvaluator
+    %pyspark
+    predictions  = model.transform(test)
+    result.select("prediction", "class").show(20, True)
+
+
+#### Получим F1 score для построенной модели
+
+    %pyspark
+    from pyspark.ml.evaluation import MulticlassClassificationEvaluator
     
-    regressionEvaluator = RegressionEvaluator(
-        predictionCol="prediction",
-        labelCol="rating",
-        metricName="rmse")
-        
-    rmse = regressionEvaluator.evaluate(prediction)
-    print("RMSE is " + str(rmse))
+    predictions  = model.transform(test)
     
-    RMSE is 46.9776816861
+    evaluator = MulticlassClassificationEvaluator(metricName="f1", labelCol="class")
+    f1Score = evaluator.evaluate(predictions)
+    print("F1 Score: ")
+    print(f1Score)
+
+    F1 Score: 
+    0.293333736818
